@@ -1,56 +1,18 @@
 import csv
 
-import os.path
+def read_csv(file_path):
+    with open(file_path, 'r') as csvfile:
+        reader = csv.DictReader(csvfile)
+        data = [row for row in reader]
+    return data
 
-FILES_DIR = os.path.dirname(__file__)
+csv_file_path = 'your_csv_file.csv'
+grades_data = read_csv(csv_file_path)
 
-def get_path(filename: str):
-    return os.path.join(FILES_DIR, filename)
+def calculate_average(data, column_name):
+    values = [float(row[column_name]) for row in data]
+    average = sum(values) / len(values)
+    return average
 
-CSV_FILE_PATH = get_path(filename="grades.csv")
-
-grades = []
-newGrades = []
-
-with open(CSV_FILE_PATH, newline='') as f:
-    reader = csv.reader(f)
-
-    header = next(reader)
-
-    for row in reader:
-        grades.append(dict(zip(header, row)))
-for i in grades:
-    summ = 0
-    newData = {}
-    for j in i:
-        i[j] = i[j].replace(' ', '').replace('"', '')
-        print(j, ' ', i[j])
-        if 'Test' in j or 'Final' in j:
-            summ += float(i[j])
-        else:
-            newData[j.replace(' ', '').replace('"', '')] = i[j]
-
-    avg = summ / 5
-    newData['avg'] = avg
-    newGrades.append(newData)
-
-
-mixGrades = {
-    'A+': 90,
-    'A': 85,
-    'A-': 80,
-    'B+': 75,
-    'B': 70,
-    'B-': 65,
-    'C+': 60,
-    'C': 55,
-    'C-': 50,
-    'D+': 45,
-    'D': 40,
-    'D-': 35,
-    'E': 30,
-    'F': 0
-}
-
-
-print(newGrades)
+final_average = calculate_average(grades_data, 'Final')
+print(f'Average Final Grade: {final_average}')

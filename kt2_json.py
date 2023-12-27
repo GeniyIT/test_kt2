@@ -1,27 +1,40 @@
 import json
 
-import os.path
+def read_and_update_json(file_path, new_superheroes):
+    with open(file_path, 'r') as jsonfile:
+        data = json.load(jsonfile)
+        data['members'].extend(new_superheroes)
 
-FILES_DIR = os.path.dirname(__file__)
+    return data
+
+json_file_path = 'superhero.json'
+new_superheroes = [
+    {
+        "name": "New Hero 1",
+        "age": 30,
+        "secretIdentity": "Secret 1",
+        "powers": ["Power 1", "Power 2"]
+    },
+    {
+        "name": "New Hero 2",
+        "age": 25,
+        "secretIdentity": "Secret 2",
+        "powers": ["Power 3", "Power 4"]
+    }
+]
+
+updated_data = read_and_update_json(json_file_path, new_superheroes)
 
 
-def get_path(filename: str):
-    return os.path.join(FILES_DIR, filename)
+sorted_members = sorted(updated_data['members'], key=lambda x: x['age'])
+sorted_data = {
+    "squadName": updated_data["squadName"],
+    "homeTown": updated_data["homeTown"],
+    "formed": updated_data["formed"],
+    "secretBase": updated_data["secretBase"],
+    "active": updated_data["active"],
+    "members": sorted_members
+}
 
-
-JSON_FILE_PATH = get_path(filename="SuperHero.json")
-
-
-with open(JSON_FILE_PATH, "r") as f:
-    supers = json.loads(f.read())
-
-print(supers)
-
-members = []
-
-for i in supers['members']:
-    members.append(i)
-
-members_sorted = sorted(members, key=lambda j: -j['age'])
-
-print(members_sorted)
+with open('superhero_new.json', 'w') as jsonfile:
+    json.dump(sorted_data, jsonfile, indent=2)
